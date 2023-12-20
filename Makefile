@@ -9,3 +9,7 @@ generate:
 ## Run the server
 run:
 	cd server && go run main.go
+
+## Run the client
+client:
+	cd client && go run main.go

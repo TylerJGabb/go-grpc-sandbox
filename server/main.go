@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net"
 
 	"github.com/tylerjgabb/go-grpc-sandbox/pb"
@@ -19,6 +20,7 @@ func (s *server) Add(
 	ctx context.Context,
 	in *pb.CalculationRequest,
 ) (*pb.CalculationResponse, error) {
+	fmt.Printf("ADD: %d+%d\n", in.A, in.B)
 	return &pb.CalculationResponse{
 		Result: in.A + in.B,
 	}, nil
@@ -28,7 +30,9 @@ func (s *server) Divide(
 	ctx context.Context,
 	in *pb.CalculationRequest,
 ) (*pb.CalculationResponse, error) {
+	fmt.Printf("DIVIDE: %d/%d\n", in.A, in.B)
 	if in.B == 0 {
+		fmt.Printf("DIVIDE: cannot divide by zero\n")
 		return nil, status.Error(codes.InvalidArgument, "cannot divide by zero")
 	}
 	return &pb.CalculationResponse{
@@ -40,6 +44,7 @@ func (s *server) Sum(
 	ctx context.Context,
 	in *pb.NumbersRequest,
 ) (*pb.CalculationResponse, error) {
+	fmt.Printf("SUM: %v\n", in.Numbers)
 	var sum int64
 	for _, v := range in.Numbers {
 		sum += v
@@ -59,6 +64,7 @@ func main() {
 	reflection.Register(s)
 
 	pb.RegisterCalculatorServer(s, &server{})
+	fmt.Printf("Starting server on port 8080\n")
 	if err := s.Serve(listener); err != nil {
 		panic(err)
 	}
